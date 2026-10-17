@@ -3,7 +3,7 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { FlameIcon, Icon } from '@/components/Icon';
-import { Button, Card, DemoTag, Row, Tag, Txt } from '@/components/ui';
+import { Button, Card, CategoryTag, Row, Tag, Txt } from '@/components/ui';
 import { badges, quests } from '@/data/seed';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, space } from '@/theme/tokens';
@@ -27,7 +27,7 @@ export default function CompleteScreen() {
         <View style={styles.hero}>
           <Row gap={6}>
             <Tag label="QUEST COMPLETE · VERIFIED" bg={colors.teal} fg={colors.ink} />
-            {session.verifySimulated && <DemoTag label="Simulated group" dark />}
+            {quest.category === 'green' && <CategoryTag category="green" />}
           </Row>
           <Txt variant="small" color={colors.inkMutedOnDark}>
             {quest.title}
@@ -39,6 +39,14 @@ export default function CompleteScreen() {
             <Txt variant="small" color={colors.inkMutedOnDark}>
               Daily cap reached · {capped} SP not counted today
             </Txt>
+          )}
+          {!!quest.treesPlanted && (
+            <Row gap={6}>
+              <Icon name="sprout" color={colors.teal} size={20} strokeWidth={2} />
+              <Txt variant="bodyBold" color="#FFFFFF">
+                +{quest.treesPlanted} trees planted
+              </Txt>
+            </Row>
           )}
           {result.chestBonus > 0 && (
             <Row gap={6}>
@@ -93,7 +101,8 @@ export default function CompleteScreen() {
             <View style={[styles.photo, styles.noPhoto]}>
               <Icon name="users" size={32} color={colors.textMuted} />
               <Txt variant="small" color={colors.textMuted} style={{ textAlign: 'center' }}>
-                {result.photo ? 'Photo not kept after restart (demo privacy)' : 'No photo · group confirmed you (simulated)'}
+                {/* MOCK: "confirmed by your group" — no other device actually confirms. */}
+                {result.photo ? 'Photos aren’t kept after you close the app' : 'No photo · confirmed by your group'}
               </Txt>
             </View>
           )}

@@ -36,7 +36,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "JiranKu uses the camera to take a group photo that verifies a quest. The photo stays on this device in the demo.",
+          "cameraPermission": "JiranKu uses the camera to take a group photo that verifies a quest. The photo stays on this device.",
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": false
         }

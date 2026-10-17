@@ -14,6 +14,9 @@ import {
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
+import { getPartner } from '@/data/rewardPartners';
+import { questCategories } from '@/data/seed';
+import type { QuestCategory } from '@/data/types';
 import { colors, fonts, MIN_TOUCH, radius, space } from '@/theme/tokens';
 
 import { Icon } from './Icon';
@@ -245,12 +248,28 @@ export function ProgressBar({
   );
 }
 
-/** Every mock must be labelled in the UI. */
-export function DemoTag({ label = 'Demo', dark }: { label?: string; dark?: boolean }) {
+/** Quest category tag, e.g. GREEN with a leaf (teal). */
+export function CategoryTag({ category }: { category: QuestCategory }) {
+  const c = questCategories[category];
   return (
-    <View style={[styles.demoTag, dark && { backgroundColor: 'rgba(255,255,255,0.14)', borderColor: 'rgba(255,255,255,0.3)' }]}>
-      <Txt variant="caps" color={dark ? colors.highlight : colors.textMuted} style={{ fontSize: 10 }}>
-        {label.toUpperCase()}
+    <View style={[styles.tag, { backgroundColor: c.tint, flexDirection: 'row', alignItems: 'center', gap: 4 }]}>
+      {c.icon && <Icon name={c.icon} size={12} color={c.color} strokeWidth={2.4} />}
+      <Txt variant="caps" color={c.color}>
+        {c.label}
+      </Txt>
+    </View>
+  );
+}
+
+/** Reward partner shown as a coloured initial (no real brand logos). */
+export function PartnerAvatar({ partnerId, size = 48 }: { partnerId: string; size?: number }) {
+  const p = getPartner(partnerId);
+  return (
+    <View
+      style={{ width: size, height: size, borderRadius: 14, backgroundColor: p.color, alignItems: 'center', justifyContent: 'center' }}
+      accessibilityLabel={p.name}>
+      <Txt variant="h2" color={p.textColor} style={{ fontSize: size * 0.42, lineHeight: size * 0.52 }}>
+        {p.initial}
       </Txt>
     </View>
   );
@@ -344,15 +363,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
-  },
-  demoTag: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.mutedBg,
   },
   tag: { alignSelf: 'flex-start', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8 },
   spChip: { flexDirection: 'row', alignItems: 'center', gap: 5, height: 36, paddingHorizontal: 10, borderRadius: radius.chip },

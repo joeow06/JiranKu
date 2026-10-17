@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Avatar, Chip, DemoTag, ProgressBar, Row, Screen, Txt } from '@/components/ui';
+import { Chip, PartnerAvatar, ProgressBar, Row, Screen, Txt } from '@/components/ui';
+import { getPartner } from '@/data/rewardPartners';
 import { rewards } from '@/data/seed';
 import type { Reward } from '@/data/types';
 import { DAILY_CAP } from '@/lib/points';
@@ -9,7 +10,7 @@ import { useBalance, useEarnedToday } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, MIN_TOUCH, radius } from '@/theme/tokens';
 
-const FILTERS = ['All', 'Makan', 'Groceries', 'Fitness', 'eWallet'] as const;
+const FILTERS = ['All', 'Makan', 'Groceries', 'Green', 'Fitness', 'eWallet'] as const;
 
 export default function RewardsScreen() {
   const balance = useBalance();
@@ -21,7 +22,8 @@ export default function RewardsScreen() {
   const list = rewards.filter((r) => filter === 'All' || r.category === filter);
 
   const confirmRedeem = (r: Reward) =>
-    Alert.alert(`Redeem ${r.title}?`, `${r.cost.toLocaleString()} SP will be deducted. Demo reward — no real voucher is issued.`, [
+    // MOCK: redeeming only deducts SP in the app; no voucher is issued by the partner.
+    Alert.alert(`Redeem ${r.title}?`, `${r.cost.toLocaleString()} SP will be deducted from your balance.`, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Redeem', onPress: () => redeem(r.id) },
     ]);
@@ -32,7 +34,6 @@ export default function RewardsScreen() {
         <Txt variant="h1" style={{ flex: 1 }}>
           Rewards
         </Txt>
-        <DemoTag label="Demo rewards" />
       </Row>
 
       <View style={styles.balanceCard}>
@@ -69,10 +70,6 @@ export default function RewardsScreen() {
           return <RewardRow key={r.id} reward={r} redeemed={got} balance={balance} onRedeem={() => confirmRedeem(r)} />;
         })}
       </View>
-
-      <Txt variant="small" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Demo rewards · partners and redemption are not live yet
-      </Txt>
     </Screen>
   );
 }
@@ -108,13 +105,13 @@ function RewardRow({
 
   return (
     <View style={styles.row}>
-      <Avatar name={reward.category} size={48} />
+      <PartnerAvatar partnerId={reward.partnerId} />
       <View style={{ flex: 1, gap: 2 }}>
         <Txt variant="bodyBold" style={{ fontSize: 14 }}>
           {reward.title}
         </Txt>
         <Txt variant="small" color={colors.textMuted} style={{ fontSize: 12 }} numberOfLines={1}>
-          {reward.partner}
+          {getPartner(reward.partnerId).name}
         </Txt>
         <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold, fontSize: 12 }}>
           {reward.cost.toLocaleString()} SP

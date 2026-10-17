@@ -6,14 +6,14 @@ import { Alert, Image, Linking, ScrollView, StyleSheet, View } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Icon } from '@/components/Icon';
-import { Avatar, Button, Card, DemoTag, Header, Row, Txt } from '@/components/ui';
+import { Avatar, Button, Card, Header, Row, Txt } from '@/components/ui';
 import { quests } from '@/data/seed';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, space } from '@/theme/tokens';
 
 type Phase = 'consent' | 'lobby' | 'countdown' | 'review';
 
-// One-device demo: other participants turn Ready on their own, staggered (ms).
+// MOCK: single device — other participants turn Ready on their own, staggered (ms). No sync between phones.
 const SIM_READY_DELAYS = [1200, 2000, 2600, 3000];
 
 export default function VerifyScreen() {
@@ -32,7 +32,7 @@ export default function VerifyScreen() {
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
 
-  // Simulated participants become ready a moment after the lobby opens.
+  // MOCK: other participants become ready a moment after the lobby opens.
   useEffect(() => {
     if (step !== 'lobby' || !quest) return;
     const timers = quest.mockParticipants.map((p, i) =>
@@ -113,7 +113,7 @@ export default function VerifyScreen() {
             </Row>
             <Bullet text="We take one front-camera photo after a 3-2-1 countdown." />
             <Bullet text="The photo proves the group met. It is shown to this group only." />
-            <Bullet text="In this demo the photo stays on your phone and is never uploaded." />
+            <Bullet text="The photo stays on your phone and is never uploaded." />
             <Bullet text="Only take photos of people who agree to be in them." />
           </Card>
           {blocked && (
@@ -152,12 +152,6 @@ export default function VerifyScreen() {
         <View style={[styles.content, { flex: 1 }]}>
           <Txt variant="h1">Nice snap!</Txt>
           <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" accessibilityLabel="Your squad snap" />
-          <Row gap={6}>
-            <DemoTag label="Simulated" />
-            <Txt variant="small" color={colors.textMuted} style={{ flex: 1 }}>
-              Other phones’ photos are simulated in this demo.
-            </Txt>
-          </Row>
         </View>
         <View style={styles.footer}>
           <Button label="Submit & complete quest" onPress={() => finish(photoUri)} />
@@ -183,13 +177,6 @@ export default function VerifyScreen() {
         <Header title="Group verify" />
       </View>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.simBanner}>
-          <DemoTag label="Simulated" />
-          <Txt variant="small" style={{ flex: 1, fontSize: 12 }}>
-            One-device demo: other neighbours are marked ready automatically.
-          </Txt>
-        </View>
-
         <View style={styles.cameraBox}>
           <CameraView
             ref={cameraRef}
@@ -215,7 +202,7 @@ export default function VerifyScreen() {
         </Row>
         <View style={{ gap: 10 }}>
           {quest.mockParticipants.map((p) => (
-            <PersonRow key={p.id} name={p.name} ready={!!ready[p.id]} simulated />
+            <PersonRow key={p.id} name={p.name} ready={!!ready[p.id]} />
           ))}
           <PersonRow name="You" ready={meReady} />
         </View>
@@ -239,21 +226,20 @@ export default function VerifyScreen() {
           </>
         )}
         <Txt variant="small" color={colors.textMuted} style={{ textAlign: 'center', fontSize: 12 }}>
-          Photo visible to this group only · stays on this device in the demo
+          Photo visible to this group only · stays on this device
         </Txt>
       </View>
     </SafeAreaView>
   );
 }
 
-function PersonRow({ name, ready, simulated }: { name: string; ready: boolean; simulated?: boolean }) {
+function PersonRow({ name, ready }: { name: string; ready: boolean }) {
   return (
     <Row gap={10}>
       <Avatar name={name === 'You' ? 'Aisyah' : name} size={40} ring={ready ? colors.tealStrong : colors.primary} dashed={!ready} />
       <Txt variant="bodyBold" style={{ flex: 1 }}>
         {name}
       </Txt>
-      {simulated && <DemoTag label="Simulated" />}
       <Txt
         variant="smallBold"
         color={ready ? colors.tealStrong : colors.textMuted}
@@ -281,14 +267,6 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { padding: space.screen, paddingTop: 8, gap: 14 },
   footer: { paddingHorizontal: space.screen, paddingTop: 10, paddingBottom: 6, gap: 6, backgroundColor: colors.bg },
-  simBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    padding: 10,
-    borderRadius: 14,
-    backgroundColor: colors.highlight,
-  },
   cameraBox: {
     height: 300,
     borderRadius: 22,

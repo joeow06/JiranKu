@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
-import { Button, Card, Chip, DemoTag, Row, Screen, Segmented, Txt } from '@/components/ui';
+import { Button, Card, Chip, Row, Screen, Segmented, Txt } from '@/components/ui';
 import { neighbourhoods } from '@/data/seed';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, MIN_TOUCH } from '@/theme/tokens';
@@ -67,29 +67,28 @@ export default function Onboarding() {
         </Txt>
       </View>
 
-      {/* 1. Mock KYC */}
+      {/* 1. Identity check. MOCK: no ID is scanned; tapping Verify marks the user verified after ~1s. */}
       <Card>
         <Row>
           <StepNum n={1} />
           <Txt variant="h3" style={{ flex: 1 }}>
             Verify it’s really you
           </Txt>
-          <DemoTag label="Demo · Mock KYC" />
         </Row>
         <Txt variant="small" color={colors.textMuted}>
           Every neighbour you meet is verified, so meeting up feels safe. Neighbours only see a Verified badge — never your IC
-          details. No ID is scanned in this demo.
+          details.
         </Txt>
         {verified ? (
           <Row style={styles.verifiedBadge}>
             <Icon name="shield" color={colors.tealStrong} />
             <Txt variant="bodyBold" color={colors.tealStrong}>
-              Verified (Mock KYC)
+              Verified
             </Txt>
           </Row>
         ) : (
           <Button
-            label={verifying ? 'Verifying (mock)…' : 'Verify identity'}
+            label={verifying ? 'Verifying…' : 'Verify identity'}
             kind="dark"
             loading={verifying}
             onPress={() => setVerifying(true)}
@@ -151,7 +150,7 @@ export default function Onboarding() {
                   {n.name}, {n.area}
                 </Txt>
                 <Txt variant="small" color={colors.textMuted} style={{ fontSize: 12 }}>
-                  Taman · 1.2k neighbours on JiranKu (demo)
+                  Taman · 1.2k neighbours on JiranKu
                 </Txt>
               </View>
             </Pressable>
@@ -162,7 +161,7 @@ export default function Onboarding() {
           <View style={{ flex: 1 }}>
             <Txt variant="bodyBold">Putra Heights condos</Txt>
             <Txt variant="small" color={colors.textMuted} style={{ fontSize: 12 }}>
-              Condo · managed by JMB · not in demo
+              Condo · managed by JMB · coming soon
             </Txt>
           </View>
         </View>

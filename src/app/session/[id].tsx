@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Icon } from '@/components/Icon';
-import { Avatar, Button, Card, DemoTag, Header, Row, Tag, Txt } from '@/components/ui';
+import { Avatar, Button, Card, Header, Row, Tag, Txt } from '@/components/ui';
 import { quests } from '@/data/seed';
 import type { Quest, Session } from '@/data/types';
 import { formatElapsed } from '@/lib/dates';
@@ -30,6 +30,7 @@ function Lobby({ session, quest }: { session: Session; quest: Quest }) {
 
   useEffect(() => {
     if (!checking) return;
+    // MOCK: pretend to read GPS for ~1s, then check in (no location is used).
     const t = setTimeout(() => checkIn(session.id), 900);
     return () => clearTimeout(t);
   }, [checking, checkIn, session.id]);
@@ -72,7 +73,6 @@ function Lobby({ session, quest }: { session: Session; quest: Quest }) {
             <Txt variant="h3" style={{ flex: 1 }}>
               Who’s coming
             </Txt>
-            <DemoTag label="Demo people" />
           </Row>
           {quest.mockParticipants.map((p) => (
             <Row key={p.id} gap={10}>
@@ -99,17 +99,14 @@ function Lobby({ session, quest }: { session: Session; quest: Quest }) {
 
       <View style={styles.footer}>
         <Button
-          label={checking ? 'Checking location (mock)…' : 'Check in at venue'}
+          label={checking ? 'Checking location…' : 'Check in at venue'}
           loading={checking}
           onPress={() => setChecking(true)}
           icon={<Icon name="pin" color="#FFFFFF" size={20} strokeWidth={2.2} />}
         />
-        <Row gap={6} style={{ justifyContent: 'center' }}>
-          <DemoTag label="Mock GPS" />
-          <Txt variant="small" color={colors.textMuted} style={{ fontSize: 12 }}>
-            Real check-in unlocks within 100 m of the venue
-          </Txt>
-        </Row>
+        <Txt variant="small" color={colors.textMuted} style={{ fontSize: 12, textAlign: 'center' }}>
+          Check in when you arrive at the venue
+        </Txt>
       </View>
     </SafeAreaView>
   );
@@ -140,8 +137,6 @@ function Active({ session, quest }: { session: Session; quest: Quest }) {
       <ScrollView contentContainerStyle={[styles.content, { alignItems: 'stretch' }]}>
         <Row>
           <Tag label="IN PROGRESS" bg={colors.teal} fg={colors.ink} />
-          <View style={{ flex: 1 }} />
-          <DemoTag label="Mock GPS" dark />
         </Row>
         <Txt variant="h1" color="#FFFFFF">
           {quest.title}
@@ -164,7 +159,8 @@ function Active({ session, quest }: { session: Session; quest: Quest }) {
 
         <Row gap={10}>
           <Stat label="Checked in" value={`${session.participantIds.length} / ${session.participantIds.length}`} />
-          <Stat label="Geofence" value="Inside*" />
+          {/* MOCK: participants and geofence status are not measured. */}
+          <Stat label="Geofence" value="Inside" />
         </Row>
 
         <View style={styles.checkList}>
@@ -174,7 +170,9 @@ function Active({ session, quest }: { session: Session; quest: Quest }) {
               <Txt variant="bodyBold" color="#FFFFFF" style={{ flex: 1 }}>
                 {p.name}
               </Txt>
-              <DemoTag label="Simulated" dark />
+              <Txt variant="small" color={colors.inkMutedOnDark}>
+                Checked in
+              </Txt>
             </Row>
           ))}
           <Row gap={10}>
@@ -187,9 +185,6 @@ function Active({ session, quest }: { session: Session; quest: Quest }) {
             </Txt>
           </Row>
         </View>
-        <Txt variant="small" color={colors.inkMutedOnDark} style={{ fontSize: 12 }}>
-          * Location check is mocked in this demo. No GPS data is collected.
-        </Txt>
       </ScrollView>
 
       <View style={[styles.footer, { backgroundColor: colors.ink }]}>
@@ -199,7 +194,7 @@ function Active({ session, quest }: { session: Session; quest: Quest }) {
         />
         {progress < 1 && (
           <Txt variant="small" color={colors.inkMutedOnDark} style={{ textAlign: 'center', fontSize: 12 }}>
-            Demo: you can finish before the goal time
+            You can finish before the goal time
           </Txt>
         )}
       </View>

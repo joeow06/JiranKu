@@ -2,9 +2,11 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Defs, Ellipse, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { Button, DemoTag, Row, Screen, Txt } from '@/components/ui';
+import { Button, Row, Screen, Txt } from '@/components/ui';
+import { hotspots } from '@/data/seed';
 import { colors } from '@/theme/tokens';
 
+// MOCK: heat blobs are fixed illustrative data, not live activity.
 // Snapchat-style heat: soft blobs over an abstract neighbourhood sketch.
 // No people, no homes, no real coordinates — positions are illustrative only.
 const BLOBS = [
@@ -15,10 +17,6 @@ const BLOBS = [
   { id: 'lrt', x: 320, y: 340, r: 45, heat: 0 },
 ];
 
-const HOTSPOTS = [
-  { name: 'Tasik Putra Heights', live: '3 quests live', questId: 'q-walk' },
-  { name: 'Putra Heights food court', live: '1 quest live', questId: 'q-makan' },
-];
 
 export default function MapScreen() {
   const router = useRouter();
@@ -28,7 +26,6 @@ export default function MapScreen() {
         <Txt variant="h1" style={{ flex: 1 }}>
           Activity map
         </Txt>
-        <DemoTag label="Demo data" />
       </Row>
 
       <View style={styles.mapBox}>
@@ -54,7 +51,7 @@ export default function MapScreen() {
         </Svg>
         <View style={styles.mapLabel}>
           <Txt variant="caps" color={colors.ink}>
-            PUTRA HEIGHTS · LIVE*
+            PUTRA HEIGHTS
           </Txt>
         </View>
       </View>
@@ -74,7 +71,7 @@ export default function MapScreen() {
       </Row>
 
       <Txt variant="h2">Hot right now</Txt>
-      {HOTSPOTS.map((h) => (
+      {hotspots.map((h) => (
         <View key={h.name} style={styles.hot}>
           <View style={{ flex: 1 }}>
             <Txt variant="bodyBold">{h.name}</Txt>
@@ -91,7 +88,7 @@ export default function MapScreen() {
       ))}
 
       <Txt variant="small" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Heat is blurred — no people, no homes shown. *Static demo data, not live.
+        Heat is blurred — no people, no homes shown.
       </Txt>
     </Screen>
   );

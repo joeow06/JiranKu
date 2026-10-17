@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { DAILY_TILE_IDS, ME, makeSeed, quests, rewards } from '@/data/seed';
+import { DAILY_TILE_IDS, GREEN_BADGE_ID, ME, makeSeed, quests, rewards } from '@/data/seed';
 import type { CheckIn, PointsEntry, Redemption, Session, User } from '@/data/types';
 import { addDays, dayKey, isToday } from '@/lib/dates';
 import { CHEST_BONUS, balance, capAward } from '@/lib/points';
@@ -38,6 +38,7 @@ export const useAppStore = create<AppState>()(
       ...makeSeed(),
       lastPhoto: null,
 
+      // MOCK: identity check (KYC) — no ID is scanned; the user is simply marked verified.
       mockVerify: () => set((s) => ({ user: { ...s.user, verification: 'mock_verified' } })),
 
       completeOnboarding: ({ interests, ageBand, neighbourhoodId }) =>
@@ -53,12 +54,13 @@ export const useAppStore = create<AppState>()(
           participantIds: [ME, ...quest.mockParticipants.map((p) => p.id)],
           status: 'joined',
           joinedAt: Date.now(),
-          verifySimulated: true,
+          verifySimulated: true, // MOCK: other participants are auto-readied on this device in Verify
         };
         set((s) => ({ sessions: [...s.sessions, session] }));
         return session.id;
       },
 
+      // MOCK: GPS check-in — no location is read; check-in always succeeds.
       checkIn: (sessionId) => {
         const now = Date.now();
         const checkIn: CheckIn = { id: uid('c'), sessionId, userId: ME, at: now, method: 'mock_gps', status: 'verified_mock' };
@@ -103,7 +105,9 @@ export const useAppStore = create<AppState>()(
         let count = streak.count;
         if (streak.lastActiveDay !== today) count = streak.lastActiveDay === addDays(today, -1) ? count + 1 : 1;
 
-        const newBadge = quest.badgeId && !s.user.badges.includes(quest.badgeId) ? quest.badgeId : null;
+        // Green quests unlock Green Jiran; other quests may have their own badge.
+        const badgeId = quest.category === 'green' ? GREEN_BADGE_ID : quest.badgeId;
+        const newBadge = badgeId && !s.user.badges.includes(badgeId) ? badgeId : null;
 
         set({
           ledger,
@@ -133,6 +137,7 @@ export const useAppStore = create<AppState>()(
         });
       },
 
+      // MOCK: redemption only deducts SP locally; no voucher is issued by a partner.
       redeem: (rewardId) => {
         const s = get();
         const reward = rewards.find((r) => r.id === rewardId);
@@ -150,7 +155,8 @@ export const useAppStore = create<AppState>()(
       resetDemo: () => set({ ...makeSeed(), lastPhoto: null }),
     }),
     {
-      name: 'jiranku-demo-v1',
+      // v2: quest catalogue changed (green quests); older saved progress is discarded.
+      name: 'jiranku-v2',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (s): PersistedState => ({
         user: s.user,

@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Icon } from '@/components/Icon';
-import { Avatar, Button, Card, DemoTag, Header, Row, Tag, Txt } from '@/components/ui';
+import { Avatar, Button, Card, CategoryTag, Header, Row, Tag, Txt } from '@/components/ui';
 import { quests } from '@/data/seed';
 import { useOpenSession, useQuestState } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
@@ -51,7 +51,8 @@ export default function QuestDetail() {
 
         <Row gap={6} style={{ flexWrap: 'wrap' }}>
           <Tag label={quest.type.toUpperCase()} bg={colors.mutedBg} fg={colors.ink} />
-          <Tag label="PUBLIC PLACE" />
+          {quest.category === 'green' && <CategoryTag category="green" />}
+          <Tag label="PUBLIC PLACE" bg={colors.mutedBg} fg={colors.ink} />
           <Tag label={`+${quest.points} SP`} bg={colors.highlight} fg={colors.primaryPressed} />
         </Row>
         <Txt variant="h1">{quest.title}</Txt>
@@ -68,7 +69,6 @@ export default function QuestDetail() {
             <Txt variant="h3" style={{ flex: 1 }}>
               Going · {going} of {quest.groupMin} needed
             </Txt>
-            <DemoTag label="Demo people" />
           </Row>
           <Row gap={14} style={{ flexWrap: 'wrap' }}>
             {quest.mockParticipants.map((p) => (
@@ -87,7 +87,7 @@ export default function QuestDetail() {
             </View>
           </Row>
           <Txt variant="small" color={colors.textMuted}>
-            ✓ = verified neighbour (Mock KYC).{quest.sharedInterest ? ` Shared interest: ${quest.sharedInterest}.` : ''}
+            ✓ = verified neighbour.{quest.sharedInterest ? ` Shared interest: ${quest.sharedInterest}.` : ''}
           </Txt>
         </View>
 

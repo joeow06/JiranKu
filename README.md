@@ -23,11 +23,13 @@ Open the build link on the phone, download the `.apk` and install it (allow "ins
 
 ## Demo loop
 
-Onboarding → Home → **Walk 15m** tile → Join → Check in → Finish & verify → Ready + photo → Complete (+20 SP, streak +1, badge) → Rewards → Redeem.
+Onboarding → Home → **Litter walk** tile → Join → Check in → Finish & verify → Ready + photo → Complete (+20 SP, streak +1, Green Jiran badge) → Rewards → Redeem.
 
-Profile → **Reset demo** restores the seed data (1,240 SP, 5-day streak) and shows onboarding again. Use it before each demo run.
+Profile → **Start over** restores the seed data (1,240 SP, 5-day streak) and shows onboarding again. Use it before each demo run.
 
-All mocks are labelled in the UI: Mock KYC, Mock GPS check-in, simulated group participants, demo rewards.
+Mocked parts (KYC, GPS check-in, auto-ready participants in Verify, rewards/partners, seeded stats) are not labelled in the UI. Find them in code with `grep -rn "MOCK:" src`.
+
+Reward partner and sponsor names live in `src/data/rewardPartners.ts`; quests, raids, events and badges in `src/data/seed.ts`.
 
 ## Checks
 

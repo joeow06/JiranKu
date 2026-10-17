@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
-import { DemoTag, ProgressBar, Row, Screen, Segmented, Tag, Txt } from '@/components/ui';
-import { quests } from '@/data/seed';
+import { CategoryTag, ProgressBar, Row, Screen, Segmented, Tag, Txt } from '@/components/ui';
+import { events, neighbourhoodQuests, quests } from '@/data/seed';
+import type { EventQuest } from '@/data/types';
 import { untilMidnight } from '@/lib/dates';
-import { questState } from '@/store/selectors';
+import { questState, useNeighbourhoodQuest } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, radius } from '@/theme/tokens';
 
@@ -14,12 +15,6 @@ const TABS = ['Daily', 'Weekly', 'Monthly'] as const;
 type Tab = (typeof TABS)[number];
 
 const asTab = (v?: string): Tab | undefined => TABS.find((t) => t === v);
-
-// Monthly neighbourhood quests are display-only in the MVP.
-const MONTHLY = [
-  { title: 'Walk 500 km together', sp: 400, progress: 312, target: 500, meta: '312 / 500 km logged by Putra Heights', joined: '186 contributing', tag: 'Progress bar' },
-  { title: '20 meetups this month', sp: 400, progress: 11, target: 20, meta: '11 / 20 meetups held', joined: '64 contributing', tag: 'Set by JMB' },
-];
 
 export default function QuestsScreen() {
   const params = useLocalSearchParams<{ tab?: string }>();
@@ -52,66 +47,109 @@ export default function QuestsScreen() {
         </Txt>
       </Row>
 
-      {tab === 'Monthly'
-        ? MONTHLY.map((m) => (
-            <View key={m.title} style={styles.card}>
+      {tab === 'Monthly' ? (
+        <>
+          {neighbourhoodQuests.map((m) => (
+            <MonthlyCard key={m.id} id={m.id} />
+          ))}
+          <Txt variant="h2" style={{ marginTop: 4 }}>
+            Upcoming events
+          </Txt>
+          {events.map((e) => (
+            <EventCard key={e.id} event={e} />
+          ))}
+        </>
+      ) : (
+        list.map((q) => {
+          const state = questState(sessions, q.id);
+          return (
+            <Pressable
+              key={q.id}
+              onPress={() => router.push({ pathname: '/quest/[id]', params: { id: q.id } })}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.card, { opacity: pressed ? 0.9 : 1 }]}>
               <Row>
+                <View style={[styles.icon, q.category === 'green' && { backgroundColor: colors.tealTint }]}>
+                  <Icon name={q.icon} color={q.category === 'green' ? colors.tealStrong : colors.primary} />
+                </View>
                 <Txt variant="h3" style={{ flex: 1 }}>
-                  {m.title}
+                  {q.title}
                 </Txt>
                 <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
-                  +{m.sp} SP
+                  +{q.points} SP
                 </Txt>
               </Row>
               <Txt variant="small" color={colors.textMuted}>
-                {m.meta}
+                {q.when} · {q.venue.name} · {q.durationMin} min
               </Txt>
-              <ProgressBar value={m.progress / m.target} fill={colors.tealStrong} />
               <Row>
                 <Txt variant="smallBold" style={{ flex: 1, fontSize: 12 }}>
-                  {m.joined}
+                  {state === 'done'
+                    ? 'Done ✓'
+                    : state === 'active'
+                      ? 'In progress'
+                      : `${q.mockParticipants.length} / ${q.groupMin} joined`}
                 </Txt>
-                <DemoTag />
-                <Tag label={m.tag.toUpperCase()} />
+                {q.category === 'green' && <CategoryTag category="green" />}
+                <Tag label="PUBLIC PLACE" bg={colors.mutedBg} fg={colors.ink} />
               </Row>
-            </View>
-          ))
-        : list.map((q) => {
-            const state = questState(sessions, q.id);
-            return (
-              <Pressable
-                key={q.id}
-                onPress={() => router.push({ pathname: '/quest/[id]', params: { id: q.id } })}
-                accessibilityRole="button"
-                style={({ pressed }) => [styles.card, { opacity: pressed ? 0.9 : 1 }]}>
-                <Row>
-                  <View style={styles.icon}>
-                    <Icon name={q.icon} color={colors.primary} />
-                  </View>
-                  <Txt variant="h3" style={{ flex: 1 }}>
-                    {q.title}
-                  </Txt>
-                  <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
-                    +{q.points} SP
-                  </Txt>
-                </Row>
-                <Txt variant="small" color={colors.textMuted}>
-                  {q.when} · {q.venue.name} · {q.durationMin} min
-                </Txt>
-                <Row>
-                  <Txt variant="smallBold" style={{ flex: 1, fontSize: 12 }}>
-                    {state === 'done'
-                      ? 'Done ✓'
-                      : state === 'active'
-                        ? 'In progress'
-                        : `${q.mockParticipants.length} / ${q.groupMin} joined`}
-                  </Txt>
-                  <Tag label="PUBLIC PLACE" />
-                </Row>
-              </Pressable>
-            );
-          })}
+            </Pressable>
+          );
+        })
+      )}
     </Screen>
+  );
+}
+
+function MonthlyCard({ id }: { id: string }) {
+  const m = useNeighbourhoodQuest(id);
+  return (
+    <View style={styles.card}>
+      <Row>
+        <Txt variant="h3" style={{ flex: 1 }}>
+          {m.title}
+        </Txt>
+        <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
+          +{m.points} SP
+        </Txt>
+      </Row>
+      <Txt variant="small" color={colors.textMuted}>
+        {m.progress} / {m.target} {m.unit === 'trees' ? 'trees planted' : `${m.unit} held`} by Putra Heights
+      </Txt>
+      <ProgressBar value={m.progress / m.target} fill={colors.tealStrong} />
+      <Row>
+        <Txt variant="smallBold" style={{ flex: 1, fontSize: 12 }}>
+          {m.contributing} contributing
+        </Txt>
+        {m.category === 'green' && <CategoryTag category="green" />}
+        <Tag label={m.tag.toUpperCase()} bg={colors.mutedBg} fg={colors.ink} />
+      </Row>
+    </View>
+  );
+}
+
+function EventCard({ event }: { event: EventQuest }) {
+  return (
+    <View style={styles.card}>
+      <Row>
+        <Txt variant="h3" style={{ flex: 1 }}>
+          {event.title}
+        </Txt>
+        <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
+          +{event.points} SP
+        </Txt>
+      </Row>
+      <Txt variant="small" color={colors.textMuted}>
+        {event.when} · {event.venue}
+      </Txt>
+      <Row>
+        <Txt variant="smallBold" style={{ flex: 1, fontSize: 12 }}>
+          {event.going}
+        </Txt>
+        {event.category === 'green' && <CategoryTag category="green" />}
+        <Tag label={event.tag.toUpperCase()} bg={colors.mutedBg} fg={colors.ink} />
+      </Row>
+    </View>
   );
 }
 

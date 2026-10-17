@@ -76,6 +76,10 @@ const ICONS = {
     </>
   ),
   chevron: <Path d="M9 5l7 7-7 7" />,
+  leaf: <Path d="M5 19c0-8 5-14 15-15-.5 10-6.5 15-14 15M5 19c3-4 6-7 10-9" />,
+  droplet: <Path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />,
+  sprout: <Path d="M12 21v-9M12 12c0-4-3-6-7-6 0 4 3 6 7 6zM12 10c0-3.5 2.5-6 7-6 0 3.5-2.5 6-7 6M7 21h10" />,
+  recycle: <Path d="M8 8l2.5-4.3a1.7 1.7 0 0 1 3 0L16 8M14 7h2.5V4.5M19.5 12l2 3.6a1.7 1.7 0 0 1-1.5 2.6H15M16.5 20.5L15 18.2l2.3-1.5M8 18.2H4a1.7 1.7 0 0 1-1.5-2.6L4.5 12M2.6 13.4L4.5 12l1.4 2.1" />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

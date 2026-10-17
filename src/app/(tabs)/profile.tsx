@@ -2,9 +2,9 @@ import { Link, useRouter } from 'expo-router';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { FlameIcon, Icon } from '@/components/Icon';
-import { Avatar, Button, DemoTag, Row, Screen, Txt } from '@/components/ui';
-import { badges, neighbourhoods } from '@/data/seed';
-import { useBalance, useLevel } from '@/store/selectors';
+import { Avatar, Button, Row, Screen, Txt } from '@/components/ui';
+import { GREEN_BADGE_ID, badges, neighbourhoods } from '@/data/seed';
+import { useBalance, useLevel, useTreesPlanted } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { dayKey } from '@/lib/dates';
 import { colors, MIN_TOUCH, radius } from '@/theme/tokens';
@@ -16,6 +16,7 @@ export default function ProfileScreen() {
   const user = useAppStore((s) => s.user);
   const resetDemo = useAppStore((s) => s.resetDemo);
   const balance = useBalance();
+  const trees = useTreesPlanted();
   const level = useLevel();
   const hood = neighbourhoods.find((n) => n.id === user.neighbourhoodId) ?? neighbourhoods[0];
   const owned = badges.filter((b) => user.badges.includes(b.id));
@@ -24,10 +25,11 @@ export default function ProfileScreen() {
   const lastIdx = user.streak.lastActiveDay === dayKey() ? todayIdx : todayIdx - 1;
 
   const confirmReset = () =>
-    Alert.alert('Reset demo?', 'Restores the seeded demo data (1,240 SP, 5-day streak) and shows onboarding again.', [
+    // MOCK: restores the seeded starting data for repeat run-throughs.
+    Alert.alert('Start over?', 'Resets your progress (1,240 SP, 5-day streak) and shows the welcome screen again.', [
       { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Reset',
+        text: 'Start over',
         style: 'destructive',
         onPress: () => {
           resetDemo();
@@ -44,7 +46,7 @@ export default function ProfileScreen() {
           <Txt variant="h1">{user.name}</Txt>
           <Txt variant="small" color={colors.textMuted}>
             {hood.name}, {hood.area}
-            {user.verification === 'mock_verified' ? ' · ✓ Verified (Mock KYC)' : ''}
+            {user.verification === 'mock_verified' ? ' · ✓ Verified' : ''}
           </Txt>
           <Txt variant="smallBold" color={colors.primaryPressed}>
             Lv {level.level} · {level.name}
@@ -107,12 +109,15 @@ export default function ProfileScreen() {
           <Txt variant="h2" style={{ flex: 1 }}>
             Stats
           </Txt>
-          <DemoTag />
         </Row>
+        {/* MOCK: quests/jiran/hours are seeded numbers; trees planted is tracked. */}
         <Row gap={10}>
           <Stat value="34" label="quests done" />
           <Stat value="19" label="jiran met" />
+        </Row>
+        <Row gap={10}>
           <Stat value="22h" label="together" />
+          <Stat value={String(trees)} label="trees planted" />
         </Row>
       </View>
 
@@ -121,7 +126,7 @@ export default function ProfileScreen() {
         <Row gap={10} style={{ flexWrap: 'wrap' }}>
           {owned.map((b) => (
             <View key={b.id} style={styles.badge}>
-              <Icon name="trophy" color={colors.primaryPressed} />
+              <Icon name={b.id === GREEN_BADGE_ID ? 'leaf' : 'trophy'} color={b.id === GREEN_BADGE_ID ? colors.tealStrong : colors.primaryPressed} />
               <Txt variant="smallBold" style={{ fontSize: 12, textAlign: 'center' }} numberOfLines={2}>
                 {b.name}
               </Txt>
@@ -151,13 +156,12 @@ export default function ProfileScreen() {
           <Txt variant="bodyBold" style={{ flex: 1 }}>
             Safety & reports
           </Txt>
-          <Txt variant="small" color={colors.textMuted}>
-            Not in demo
-          </Txt>
+          {/* MOCK: reporting flow not built yet. */}
+          <Icon name="chevron" color={colors.textMuted} />
         </View>
       </View>
 
-      <Button label="Reset demo" kind="secondary" onPress={confirmReset} />
+      <Button label="Start over" kind="secondary" onPress={confirmReset} />
     </Screen>
   );
 }

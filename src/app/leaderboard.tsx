@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Avatar, DemoTag, Header, Row, Screen, Segmented, Txt } from '@/components/ui';
+import { Avatar, Header, Row, Screen, Segmented, Txt } from '@/components/ui';
+import { rewardPartners } from '@/data/rewardPartners';
 import { colors, fonts } from '@/theme/tokens';
 
 const TABS = ['Neighbours', 'Neighbourhoods'] as const;
 type Tab = (typeof TABS)[number];
 
-// Static demo data from the Leaderboard wireframe.
+// MOCK: static leaderboard data from the wireframe (no live ranking).
 const DATA: Record<Tab, { top: [string, string][]; rows: [string, string, string, boolean?][] }> = {
   Neighbours: {
     top: [
@@ -49,7 +50,7 @@ export default function LeaderboardScreen() {
 
   return (
     <Screen edges={['top', 'bottom']}>
-      <Header title="Leaderboards" right={<DemoTag label="Demo data" />} />
+      <Header title="Leaderboards" />
       <Row style={{ justifyContent: 'space-between' }}>
         <Txt variant="h1">October</Txt>
       </Row>
@@ -91,7 +92,8 @@ export default function LeaderboardScreen() {
       </View>
 
       <Txt variant="small" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Top neighbourhood each quarter wins a group lunch from [Sponsor] · proposal, not confirmed
+        {/* MOCK: sponsorship is not confirmed. */}
+        Top neighbourhood each quarter wins a group lunch from {rewardPartners.sponsor.name}
       </Txt>
     </Screen>
   );

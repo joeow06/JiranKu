@@ -2,12 +2,19 @@ import { Link, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { FlameIcon, Icon } from '@/components/Icon';
-import { Avatar, DemoTag, ProgressBar, Row, Screen, SpChip, Txt } from '@/components/ui';
+import { Avatar, ProgressBar, Row, Screen, SpChip, Txt } from '@/components/ui';
 import { DAILY_TILE_IDS, neighbourhoods, quests } from '@/data/seed';
 import type { Quest } from '@/data/types';
 import { greeting, untilMidnight } from '@/lib/dates';
 import { CHEST_BONUS } from '@/lib/points';
-import { questState, useBalance, useChestProgress, useLevel, type QuestState } from '@/store/selectors';
+import {
+  questState,
+  useBalance,
+  useChestProgress,
+  useLevel,
+  useNeighbourhoodQuest,
+  type QuestState,
+} from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, fonts, radius } from '@/theme/tokens';
 
@@ -18,6 +25,7 @@ export default function HomeScreen() {
   const level = useLevel();
   const chest = useChestProgress();
   const hood = neighbourhoods.find((n) => n.id === user.neighbourhoodId) ?? neighbourhoods[0];
+  const raid = useNeighbourhoodQuest(hood.raidId);
   const daily = DAILY_TILE_IDS.map((id) => quests.find((q) => q.id === id)!);
   const states = daily.map((q) => questState(sessions, q.id));
   const featured = states.findIndex((s) => s !== 'done');
@@ -112,52 +120,55 @@ export default function HomeScreen() {
             <Txt variant="caps" color={colors.highlight}>
               NEIGHBOURHOOD RAID
             </Txt>
-            <DemoTag dark />
             <View style={{ flex: 1 }} />
             <Txt variant="smallBold" color={colors.inkMutedOnDark} style={{ fontSize: 12 }}>
-              {hood.raid.rank}
+              {hood.raidRank}
+            </Txt>
+          </Row>
+          <Row gap={6}>
+            {raid.category === 'green' && <Icon name="leaf" size={18} color={colors.teal} strokeWidth={2} />}
+            <Txt variant="h3" color="#FFFFFF" style={{ flex: 1 }} numberOfLines={1}>
+              {raid.title}
             </Txt>
           </Row>
           <Row style={{ alignItems: 'baseline' }}>
             <Txt variant="h1" color="#FFFFFF" style={{ fontSize: 30, lineHeight: 36 }}>
-              {hood.raid.progress}
+              {raid.progress}
             </Txt>
             <Txt variant="small" color={colors.inkMutedOnDark} style={{ fontSize: 14 }}>
-              / {hood.raid.target} {hood.raid.unit}
+              / {raid.target} {raid.unit === 'trees' ? 'trees planted' : raid.unit}
             </Txt>
             <View style={{ flex: 1 }} />
             <View style={styles.raidReward}>
               <Txt variant="smallBold" color="#FFFFFF" style={{ fontFamily: fonts.extrabold, fontSize: 12 }}>
-                +{hood.raid.rewardSp}
+                +{raid.points}
               </Txt>
             </View>
           </Row>
-          <ProgressBar value={hood.raid.progress / hood.raid.target} height={14} fill={colors.highlight} track={colors.inkSoft} />
+          <ProgressBar value={raid.progress / raid.target} height={14} fill={colors.highlight} track={colors.inkSoft} />
         </Pressable>
       </Link>
 
-      {/* Jiran free now → Map */}
+      {/* Jiran free now → Map. MOCK: fixed count, not live availability. */}
       <Link href="/map" asChild>
         <Pressable style={styles.freeNow}>
           <View style={styles.liveDot} />
           <Txt variant="bodyBold" style={{ flex: 1, fontSize: 14 }}>
             8 jiran free right now
           </Txt>
-          <DemoTag />
           <Txt variant="smallBold" color={colors.tealStrong} style={{ fontFamily: fonts.extrabold }}>
             Map →
           </Txt>
         </Pressable>
       </Link>
 
-      {/* Feed item (static) */}
+      {/* Feed item. MOCK: static seeded activity. */}
       <View style={styles.feed}>
         <View style={styles.feedThumb} />
         <View style={{ flex: 1, gap: 4 }}>
           <Txt variant="small" style={{ lineHeight: 18 }}>
             <Txt variant="smallBold">Wei Jie +3</Txt> cleared <Txt variant="smallBold">Badminton</Txt>
           </Txt>
-          <DemoTag />
         </View>
         <View style={styles.tahniah}>
           <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold, fontSize: 12 }}>
@@ -179,7 +190,7 @@ function QuestTile({ quest, state, featured }: { quest: Quest; state: QuestState
     <Pressable
       onPress={() => router.push({ pathname: '/quest/[id]', params: { id: quest.id } })}
       accessibilityRole="button"
-      accessibilityLabel={`${quest.tileLabel}, ${done ? 'done' : `${quest.points} SP`}`}
+      accessibilityLabel={`${quest.tileLabel}${quest.category === 'green' ? ', green quest' : ''}, ${done ? 'done' : `${quest.points} SP`}`}
       style={({ pressed }) => [
         styles.tile,
         { backgroundColor: bg, opacity: pressed ? 0.9 : 1 },
@@ -187,6 +198,11 @@ function QuestTile({ quest, state, featured }: { quest: Quest; state: QuestState
         look === 'featured' && { borderBottomWidth: 6, borderBottomColor: colors.primaryPressed },
         look === 'plain' && { borderBottomWidth: 6, borderBottomColor: colors.border },
       ]}>
+      {quest.category === 'green' && (
+        <View style={styles.greenBadge}>
+          <Icon name="leaf" size={14} color="#FFFFFF" strokeWidth={2.4} />
+        </View>
+      )}
       <View
         style={[
           styles.tileIcon,
@@ -267,6 +283,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   tileIcon: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  greenBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.tealStrong,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   tilePill: { height: 20, paddingHorizontal: 8, borderRadius: 10, justifyContent: 'center' },
   chestTrack: { flex: 1, flexDirection: 'row', gap: 4 },
   chestSeg: { flex: 1, height: 12, borderRadius: 6 },

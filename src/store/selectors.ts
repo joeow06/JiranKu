@@ -1,4 +1,4 @@
-import { DAILY_TILE_IDS, quests } from '@/data/seed';
+import { DAILY_TILE_IDS, SEED_TREES_PLANTED, neighbourhoodQuests, quests } from '@/data/seed';
 import type { Session } from '@/data/types';
 import { isToday } from '@/lib/dates';
 import { balance, earnedToday, levelInfo, lifetimeXp } from '@/lib/points';
@@ -29,3 +29,18 @@ export const useChestProgress = () =>
 
 export const useOpenSession = (questId: string) =>
   useAppStore((s) => s.sessions.find((x) => x.questId === questId && x.status !== 'completed'));
+
+const treesFromQuests = (sessions: Session[]) =>
+  sessions
+    .filter((s) => s.status === 'completed')
+    .reduce((sum, s) => sum + (quests.find((q) => q.id === s.questId)?.treesPlanted ?? 0), 0);
+
+/** Trees you've planted (seeded history + completed tree-planting quests). */
+export const useTreesPlanted = () => useAppStore((s) => SEED_TREES_PLANTED + treesFromQuests(s.sessions));
+
+/** A neighbourhood quest with your newly planted trees added to the tree raid. */
+export function useNeighbourhoodQuest(id: string) {
+  const extraTrees = useAppStore((s) => treesFromQuests(s.sessions));
+  const q = neighbourhoodQuests.find((m) => m.id === id)!;
+  return q.unit === 'trees' ? { ...q, progress: Math.min(q.target, q.progress + extraTrees) } : q;
+}

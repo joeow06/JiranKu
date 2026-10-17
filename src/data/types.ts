@@ -4,6 +4,9 @@ export type ID = string;
 
 export type QuestType = 'daily' | 'weekly' | 'monthly';
 
+/** Theme of a quest. 'green' = sustainability quests (teal tag + leaf icon). */
+export type QuestCategory = 'social' | 'green';
+
 export interface User {
   id: ID;
   name: string;
@@ -20,7 +23,33 @@ export interface Neighbourhood {
   id: ID;
   name: string;
   area: string;
-  raid: { title: string; progress: number; target: number; unit: string; rewardSp: number; rank: string };
+  raidId: ID; // NeighbourhoodQuest shown as the Neighbourhood Raid on Home
+  raidRank: string;
+}
+
+/** Monthly quest the whole neighbourhood works on together (display-only in the MVP). */
+export interface NeighbourhoodQuest {
+  id: ID;
+  category: QuestCategory;
+  title: string;
+  points: number;
+  progress: number;
+  target: number;
+  unit: string;
+  contributing: number;
+  tag: string;
+}
+
+/** Limited-time event (display-only in the MVP). */
+export interface EventQuest {
+  id: ID;
+  category: QuestCategory;
+  title: string;
+  points: number;
+  when: string;
+  venue: string;
+  going: string;
+  tag: string;
 }
 
 export interface MockPerson {
@@ -32,9 +61,10 @@ export interface MockPerson {
 export interface Quest {
   id: ID;
   type: QuestType;
+  category: QuestCategory;
   title: string;
   tileLabel: string; // short label for Home tiles
-  icon: 'walk' | 'highfive' | 'teh' | 'badminton' | 'food' | 'run';
+  icon: 'walk' | 'highfive' | 'teh' | 'badminton' | 'food' | 'run' | 'leaf' | 'droplet' | 'sprout' | 'recycle';
   points: number;
   // Public venues only — no coordinates are stored or shown.
   venue: { name: string; spot: string };
@@ -46,6 +76,7 @@ export interface Quest {
   sharedInterest?: string;
   verifyMethod: string;
   badgeId?: ID;
+  treesPlanted?: number; // trees added to your count when completed
 }
 
 export type SessionStatus = 'joined' | 'checked_in' | 'completed';
@@ -95,8 +126,8 @@ export interface PointsEntry {
 export interface Reward {
   id: ID;
   title: string;
-  partner: string;
-  category: 'Makan' | 'Groceries' | 'Fitness' | 'eWallet';
+  partnerId: string; // key in src/data/rewardPartners.ts
+  category: 'Makan' | 'Groceries' | 'Fitness' | 'eWallet' | 'Green';
   cost: number;
   locked?: boolean;
 }
