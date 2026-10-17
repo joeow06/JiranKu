@@ -136,6 +136,8 @@ export interface Redemption {
   id: ID;
   rewardId: ID;
   at: number;
+  expiresAt: number;
+  voucherCode: string;
 }
 
 export interface Badge {

@@ -1,9 +1,11 @@
 import { Link, useRouter } from 'expo-router';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import Svg, { Rect } from 'react-native-svg';
 
 import { FlameIcon, Icon } from '@/components/Icon';
-import { Avatar, Button, Row, Screen, Txt } from '@/components/ui';
-import { GREEN_BADGE_ID, badges, neighbourhoods } from '@/data/seed';
+import { Avatar, Button, PartnerAvatar, Row, Screen, Txt } from '@/components/ui';
+import { getPartner } from '@/data/rewardPartners';
+import { GREEN_BADGE_ID, badges, neighbourhoods, rewards } from '@/data/seed';
 import { useBalance, useLevel, useTreesPlanted } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { dayKey } from '@/lib/dates';
@@ -15,6 +17,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const user = useAppStore((s) => s.user);
   const resetDemo = useAppStore((s) => s.resetDemo);
+  const redemptions = useAppStore((s) => s.redemptions);
   const balance = useBalance();
   const trees = useTreesPlanted();
   const level = useLevel();
@@ -122,6 +125,51 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ gap: 8 }}>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <Txt variant="h2">Your Vouchers</Txt>
+          <Txt variant="small" color={colors.textMuted}>{redemptions.filter((r) => (r.expiresAt ?? r.at + 30 * 86400000) > Date.now()).length} active</Txt>
+        </Row>
+        {redemptions
+          .filter((r) => (r.expiresAt ?? r.at + 30 * 86400000) > Date.now())
+          .slice()
+          .sort((a, b) => b.at - a.at)
+          .map((redemption) => {
+            const reward = rewards.find((r) => r.id === redemption.rewardId);
+            if (!reward) return null;
+            const partner = getPartner(reward.partnerId);
+            const expiresAt = redemption.expiresAt ?? redemption.at + 30 * 86400000;
+            const code = redemption.voucherCode ?? redemption.id;
+            return (
+              <View key={redemption.id} style={styles.voucherCard}>
+                <View style={{ flex: 1, gap: 3 }}>
+                  <Row gap={10}>
+                    <PartnerAvatar partnerId={reward.partnerId} />
+                    <View style={{ flex: 1 }}>
+                      <Txt variant="bodyBold">{partner.name}</Txt>
+                      <Txt variant="small" color={colors.textMuted}>{reward.title}</Txt>
+                    </View>
+                  </Row>
+                  <Txt variant="smallBold" color={colors.primaryPressed}>
+                    Expires {new Date(expiresAt).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </Txt>
+                </View>
+                <VoucherQr value={code} />
+              </View>
+            );
+          })}
+        {redemptions.every((r) => (r.expiresAt ?? r.at + 30 * 86400000) <= Date.now()) && (
+          <View style={styles.emptyVoucher}>
+            <Txt variant="small" color={colors.textMuted}>Redeemed rewards will appear here with their QR code and expiry date.</Txt>
+            <Link href="/rewards" asChild>
+              <Pressable style={{ minHeight: 36, justifyContent: 'center' }}>
+                <Txt variant="smallBold" color={colors.primaryPressed}>Browse rewards →</Txt>
+              </Pressable>
+            </Link>
+          </View>
+        )}
+      </View>
+
+      <View style={{ gap: 8 }}>
         <Txt variant="h2">Badges · {owned.length}</Txt>
         <Row gap={10} style={{ flexWrap: 'wrap' }}>
           {owned.map((b) => (
@@ -177,6 +225,38 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
+/** A locally generated QR-style voucher mark; partner scanning is not connected in this prototype. */
+function VoucherQr({ value }: { value: string }) {
+  const size = 21;
+  let seed = 2166136261;
+  for (const char of value) seed = Math.imul(seed ^ char.charCodeAt(0), 16777619) >>> 0;
+  const cells: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+  const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+  const finder = (left: number, top: number) => {
+    for (let y = -1; y <= 7; y++) for (let x = -1; x <= 7; x++) {
+      const xx = left + x, yy = top + y;
+      if (xx < 0 || yy < 0 || xx >= size || yy >= size) continue;
+      reserved[yy][xx] = true;
+      cells[yy][xx] = x >= 0 && x <= 6 && y >= 0 && y <= 6 && (x === 0 || x === 6 || y === 0 || y === 6 || (x >= 2 && x <= 4 && y >= 2 && y <= 4));
+    }
+  };
+  finder(0, 0); finder(14, 0); finder(0, 14);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    if (reserved[y][x]) continue;
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    cells[y][x] = (seed >>> 29) > 3;
+  }
+  return (
+    <View style={styles.qrWrap} accessibilityLabel={`Voucher QR code ${value}`}>
+      <Svg width={96} height={96} viewBox="0 0 21 21">
+        <Rect width="21" height="21" fill="#FFFFFF" />
+        {cells.flatMap((row, y) => row.map((on, x) => on ? <Rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={colors.ink} /> : null))}
+      </Svg>
+      <Txt variant="smallBold" style={{ fontSize: 9, letterSpacing: 0.5 }}>{value}</Txt>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   topCard: { flex: 1, padding: 14, borderRadius: radius.card, gap: 2 },
   dot: { width: 30, height: 30, borderRadius: 15 },
@@ -199,4 +279,7 @@ const styles = StyleSheet.create({
   list: { borderRadius: 18, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, overflow: 'hidden' },
   listRow: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: MIN_TOUCH + 8, paddingHorizontal: 14 },
   listBorder: { borderTopWidth: 1, borderTopColor: colors.mutedBg },
+  voucherCard: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 18, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  emptyVoucher: { padding: 14, borderRadius: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, gap: 4 },
+  qrWrap: { padding: 6, borderRadius: 10, backgroundColor: '#FFFFFF', alignItems: 'center', gap: 2, borderWidth: 1, borderColor: colors.border },
 });

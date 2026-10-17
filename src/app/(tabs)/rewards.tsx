@@ -22,7 +22,7 @@ export default function RewardsScreen() {
   const list = rewards.filter((r) => filter === 'All' || r.category === filter);
 
   const confirmRedeem = (r: Reward) =>
-    // MOCK: redeeming only deducts SP in the app; no voucher is issued by the partner.
+    // MOCK: redeeming deducts SP and creates a local voucher for the profile.
     Alert.alert(`Redeem ${r.title}?`, `${r.cost.toLocaleString()} SP will be deducted from your balance.`, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Redeem', onPress: () => redeem(r.id) },

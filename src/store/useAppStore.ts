@@ -137,7 +137,7 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      // MOCK: redemption only deducts SP locally; no voucher is issued by a partner.
+      // MOCK: issue a local voucher record; partner redemption is not integrated.
       redeem: (rewardId) => {
         const s = get();
         const reward = rewards.find((r) => r.id === rewardId);
@@ -147,7 +147,16 @@ export const useAppStore = create<AppState>()(
         const now = Date.now();
         set({
           ledger: [...s.ledger, { id: uid('p'), userId: ME, amount: -reward.cost, reason: 'redeem', label: reward.title, refId: rewardId, at: now }],
-          redemptions: [...s.redemptions, { id: uid('r'), rewardId, at: now }],
+          redemptions: [
+            ...s.redemptions,
+            {
+              id: uid('r'),
+              rewardId,
+              at: now,
+              expiresAt: now + 30 * 24 * 60 * 60 * 1000,
+              voucherCode: uid('v').toUpperCase(),
+            },
+          ],
         });
         return true;
       },
