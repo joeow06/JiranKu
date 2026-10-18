@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
@@ -27,24 +27,13 @@ const AGES = ['18–24', '25–34', '35–44', '45–59', '60+'] as const;
 export default function Onboarding() {
   const router = useRouter();
   const user = useAppStore((s) => s.user);
-  const mockVerify = useAppStore((s) => s.mockVerify);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
 
-  const [verifying, setVerifying] = useState(false);
   const [picked, setPicked] = useState<string[]>(['Badminton', 'Running', 'Makan']);
   const [age, setAge] = useState<(typeof AGES)[number]>('25–34');
   const [hood, setHood] = useState<string | null>(null);
 
   const verified = user.verification === 'mock_verified';
-
-  useEffect(() => {
-    if (!verifying) return;
-    const t = setTimeout(() => {
-      mockVerify();
-      setVerifying(false);
-    }, 1200);
-    return () => clearTimeout(t);
-  }, [verifying, mockVerify]);
 
   const toggle = (i: string) => setPicked((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
   const canContinue = verified && picked.length >= 3 && !!hood;
@@ -67,7 +56,7 @@ export default function Onboarding() {
         </Txt>
       </View>
 
-      {/* 1. Identity check. MOCK: no ID is scanned; tapping Verify marks the user verified after ~1s. */}
+      {/* 1. Identity check: IC photo + face scan on /kyc. */}
       <Card>
         <Row>
           <StepNum n={1} />
@@ -88,10 +77,10 @@ export default function Onboarding() {
           </Row>
         ) : (
           <Button
-            label={verifying ? 'Verifying…' : 'Verify identity'}
+            label="Verify with IC + face scan"
             kind="dark"
-            loading={verifying}
-            onPress={() => setVerifying(true)}
+            icon={<Icon name="shield" color="#FFFFFF" size={20} />}
+            onPress={() => router.push('/kyc')}
           />
         )}
       </Card>

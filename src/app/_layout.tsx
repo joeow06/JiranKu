@@ -53,6 +53,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="kyc" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="complete/[id]" options={{ gestureEnabled: false }} />
       </Stack>
     </SafeAreaProvider>
