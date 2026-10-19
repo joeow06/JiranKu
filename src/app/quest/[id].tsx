@@ -53,7 +53,7 @@ export default function QuestDetail() {
           <Tag label={quest.type.toUpperCase()} bg={colors.mutedBg} fg={colors.ink} />
           {quest.category === 'green' && <CategoryTag category="green" />}
           <Tag label="PUBLIC PLACE" bg={colors.mutedBg} fg={colors.ink} />
-          <Tag label={`+${quest.points} SP`} bg={colors.highlight} fg={colors.primaryPressed} />
+          <Tag label={`+${quest.points} JP`} bg={colors.highlight} fg={colors.primaryPressed} />
         </Row>
         <Txt variant="h1">{quest.title}</Txt>
 

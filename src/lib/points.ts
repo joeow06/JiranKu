@@ -23,12 +23,12 @@ export function balance(ledger: PointsEntry[]): number {
   return ledger.reduce((sum, e) => sum + e.amount, 0);
 }
 
-/** SP earned today (counts against the daily cap). Spending doesn't free up cap. */
+/** JP earned today (counts against the daily cap). Spending doesn't free up cap. */
 export function earnedToday(ledger: PointsEntry[]): number {
   return ledger.filter((e) => e.amount > 0 && isToday(e.at)).reduce((s, e) => s + e.amount, 0);
 }
 
-/** XP = lifetime SP earned, so redeeming never lowers your level. */
+/** XP = lifetime JP earned, so redeeming never lowers your level. */
 export function lifetimeXp(ledger: PointsEntry[]): number {
   return ledger.filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0);
 }

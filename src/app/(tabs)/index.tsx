@@ -32,7 +32,7 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      {/* Header: avatar + level, greeting, streak, SP */}
+      {/* Header: avatar + level, greeting, streak, JP */}
       <Row gap={10}>
         <Link href="/profile" asChild>
           <Pressable accessibilityLabel={`Profile, level ${level.level}`} style={styles.avatarWrap}>
@@ -61,7 +61,7 @@ export default function HomeScreen() {
           </Pressable>
         </Link>
         <Link href="/rewards" asChild>
-          <Pressable accessibilityLabel={`${balance} SahabatPoints`} style={{ minHeight: 44, justifyContent: 'center' }}>
+          <Pressable accessibilityLabel={`${balance} JiranPoints`} style={{ minHeight: 44, justifyContent: 'center' }}>
             <SpChip value={balance.toLocaleString()} dark />
           </Pressable>
         </Link>
@@ -74,7 +74,7 @@ export default function HomeScreen() {
             Lv {level.level} · {level.name}
           </Txt>
           <Txt variant="smallBold" color={colors.textMuted} style={{ fontSize: 12 }}>
-            {level.toNext > 0 ? `${level.toNext.toLocaleString()} SP to Lv ${level.level + 1}` : 'Max level'}
+            {level.toNext > 0 ? `${level.toNext.toLocaleString()} JP to Lv ${level.level + 1}` : 'Max level'}
           </Txt>
         </Row>
         <ProgressBar value={level.progress} />
@@ -190,7 +190,7 @@ function QuestTile({ quest, state, featured }: { quest: Quest; state: QuestState
     <Pressable
       onPress={() => router.push({ pathname: '/quest/[id]', params: { id: quest.id } })}
       accessibilityRole="button"
-      accessibilityLabel={`${quest.tileLabel}${quest.category === 'green' ? ', green quest' : ''}, ${done ? 'done' : `${quest.points} SP`}`}
+      accessibilityLabel={`${quest.tileLabel}${quest.category === 'green' ? ', green quest' : ''}, ${done ? 'done' : `${quest.points} JP`}`}
       style={({ pressed }) => [
         styles.tile,
         { backgroundColor: bg, opacity: pressed ? 0.9 : 1 },

@@ -12,28 +12,28 @@ type Tab = (typeof TABS)[number];
 const DATA: Record<Tab, { top: [string, string][]; rows: [string, string, string, boolean?][] }> = {
   Neighbours: {
     top: [
-      ['Mei Ling', '2,480 SP'],
-      ['Wei Jie', '2,210 SP'],
-      ['Kumar', '1,960 SP'],
+      ['Mei Ling', '2,480 JP'],
+      ['Wei Jie', '2,210 JP'],
+      ['Kumar', '1,960 JP'],
     ],
     rows: [
-      ['4', 'Farah', '1,720 SP'],
-      ['5', 'Daniel', '1,590 SP'],
-      ['12', 'You (Aisyah)', '1,240 SP', true],
-      ['13', 'Siva', '1,180 SP'],
+      ['4', 'Farah', '1,720 JP'],
+      ['5', 'Daniel', '1,590 JP'],
+      ['12', 'You (Aisyah)', '1,240 JP', true],
+      ['13', 'Siva', '1,180 JP'],
     ],
   },
   Neighbourhoods: {
     top: [
-      ['USJ 1', '9.1k SP'],
-      ['Kota Kemuning', '8.4k SP'],
-      ['Putra Heights', '8.0k SP'],
+      ['USJ 1', '9.1k JP'],
+      ['Kota Kemuning', '8.4k JP'],
+      ['Putra Heights', '8.0k JP'],
     ],
     rows: [
-      ['3', 'Putra Heights · yours', '8.0k SP', true],
-      ['4', 'Subang Bestari', '7.2k SP'],
-      ['5', 'Bandar Kinrara', '6.9k SP'],
-      ['6', 'Bukit Jelutong', '6.1k SP'],
+      ['3', 'Putra Heights · yours', '8.0k JP', true],
+      ['4', 'Subang Bestari', '7.2k JP'],
+      ['5', 'Bandar Kinrara', '6.9k JP'],
+      ['6', 'Bukit Jelutong', '6.1k JP'],
     ],
   },
 };

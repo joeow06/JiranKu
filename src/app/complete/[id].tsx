@@ -33,11 +33,11 @@ export default function CompleteScreen() {
             {quest.title}
           </Txt>
           <Txt variant="display" color={colors.highlight} style={{ fontSize: 56, lineHeight: 62 }}>
-            +{result.awarded} SP
+            +{result.awarded} JP
           </Txt>
           {capped > 0 && (
             <Txt variant="small" color={colors.inkMutedOnDark}>
-              Daily cap reached · {capped} SP not counted today
+              Daily cap reached · {capped} JP not counted today
             </Txt>
           )}
           {!!quest.treesPlanted && (
@@ -52,7 +52,7 @@ export default function CompleteScreen() {
             <Row gap={6}>
               <Icon name="chest" color={colors.coin} size={20} strokeWidth={2} />
               <Txt variant="bodyBold" color="#FFFFFF">
-                Daily chest opened · +{result.chestBonus} SP
+                Daily chest opened · +{result.chestBonus} JP
               </Txt>
             </Row>
           )}

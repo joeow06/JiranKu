@@ -203,7 +203,7 @@ export const badges: Badge[] = [
   { id: 'b-smash', name: 'Smash Jiran', description: 'Played badminton with neighbours' },
 ];
 
-// MOCK: rewards are not connected to any partner; redeeming only deducts SP locally.
+// MOCK: rewards are not connected to any partner; redeeming only deducts JP locally.
 export const rewards: Reward[] = [
   { id: 'r-teh', title: 'Teh tarik + roti canai', partnerId: 'mamak', category: 'Makan', cost: 300 },
   { id: 'r-store', title: 'RM5 store voucher', partnerId: 'convenience', category: 'Groceries', cost: 500 },
@@ -239,7 +239,7 @@ export function makeSeed(now: number = Date.now()) {
     verifySimulated: true,
   };
 
-  // Balance 1,240 SP; 140 of it earned today → "Today: 140 / 300".
+  // Balance 1,240 JP; 140 of it earned today → "Today: 140 / 300".
   const ledger: PointsEntry[] = [
     { id: 'p-seed-1', userId: ME, amount: 1100, reason: 'seed', label: 'Earlier quests', at: now - 3 * 86400_000 },
     { id: 'p-seed-2', userId: ME, amount: 120, reason: 'seed', label: 'Weekly quest', at: now - 4 * 3600_000 },

@@ -29,7 +29,7 @@ export default function ProfileScreen() {
 
   const confirmReset = () =>
     // MOCK: restores the seeded starting data for repeat run-throughs.
-    Alert.alert('Start over?', 'Resets your progress (1,240 SP, 5-day streak) and shows the welcome screen again.', [
+    Alert.alert('Start over?', 'Resets your progress (1,240 JP, 5-day streak) and shows the welcome screen again.', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Start over',
@@ -60,7 +60,7 @@ export default function ProfileScreen() {
       <Row gap={10}>
         <View style={[styles.topCard, { backgroundColor: colors.ink }]}>
           <Txt variant="small" color={colors.inkMutedOnDark}>
-            SahabatPoints
+            JiranPoints
           </Txt>
           <Txt variant="h1" color="#FFFFFF">
             {balance.toLocaleString()}

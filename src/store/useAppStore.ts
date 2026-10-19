@@ -164,8 +164,8 @@ export const useAppStore = create<AppState>()(
       resetDemo: () => set({ ...makeSeed(), lastPhoto: null }),
     }),
     {
-      // v2: quest catalogue changed (green quests); older saved progress is discarded.
-      name: 'jiranku-v2',
+      // v3: start account creation unverified, including for devices with an older demo session.
+      name: 'jiranku-v3',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (s): PersistedState => ({
         user: s.user,

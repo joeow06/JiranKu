@@ -82,7 +82,7 @@ export interface Quest {
 export type SessionStatus = 'joined' | 'checked_in' | 'completed';
 
 export interface SessionResult {
-  awarded: number; // SP actually credited after daily cap
+  awarded: number; // JP actually credited after daily cap
   requested: number;
   chestBonus: number;
   streakAfter: number;

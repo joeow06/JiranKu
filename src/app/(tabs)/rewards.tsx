@@ -22,8 +22,8 @@ export default function RewardsScreen() {
   const list = rewards.filter((r) => filter === 'All' || r.category === filter);
 
   const confirmRedeem = (r: Reward) =>
-    // MOCK: redeeming deducts SP and creates a local voucher for the profile.
-    Alert.alert(`Redeem ${r.title}?`, `${r.cost.toLocaleString()} SP will be deducted from your balance.`, [
+    // MOCK: redeeming deducts JP and creates a local voucher for the profile.
+    Alert.alert(`Redeem ${r.title}?`, `${r.cost.toLocaleString()} JP will be deducted from your balance.`, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Redeem', onPress: () => redeem(r.id) },
     ]);
@@ -45,13 +45,13 @@ export default function RewardsScreen() {
             {balance.toLocaleString()}
           </Txt>
           <Txt variant="bodyBold" color={colors.highlight}>
-            SP
+            JP
           </Txt>
         </Row>
         <View style={{ gap: 6 }}>
           <Row style={{ justifyContent: 'space-between' }}>
             <Txt variant="small" color={colors.inkMutedOnDark} style={{ fontSize: 12 }}>
-              Today: {Math.min(today, DAILY_CAP)} / {DAILY_CAP} SP daily cap
+              Today: {Math.min(today, DAILY_CAP)} / {DAILY_CAP} JP daily cap
             </Txt>
           </Row>
           <ProgressBar value={today / DAILY_CAP} fill={colors.highlight} track={colors.inkSoft} />
@@ -114,7 +114,7 @@ function RewardRow({
           {getPartner(reward.partnerId).name}
         </Txt>
         <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold, fontSize: 12 }}>
-          {reward.cost.toLocaleString()} SP
+          {reward.cost.toLocaleString()} JP
         </Txt>
       </View>
       <Pressable

@@ -76,7 +76,7 @@ export default function QuestsScreen() {
                   {q.title}
                 </Txt>
                 <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
-                  +{q.points} SP
+                  +{q.points} JP
                 </Txt>
               </Row>
               <Txt variant="small" color={colors.textMuted}>
@@ -110,7 +110,7 @@ function MonthlyCard({ id }: { id: string }) {
           {m.title}
         </Txt>
         <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
-          +{m.points} SP
+          +{m.points} JP
         </Txt>
       </Row>
       <Txt variant="small" color={colors.textMuted}>
@@ -136,7 +136,7 @@ function EventCard({ event }: { event: EventQuest }) {
           {event.title}
         </Txt>
         <Txt variant="smallBold" color={colors.primaryPressed} style={{ fontFamily: fonts.extrabold }}>
-          +{event.points} SP
+          +{event.points} JP
         </Txt>
       </Row>
       <Txt variant="small" color={colors.textMuted}>

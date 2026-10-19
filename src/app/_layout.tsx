@@ -51,6 +51,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
+        <Stack.Screen name="index" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
         <Stack.Screen name="kyc" options={{ presentation: 'fullScreenModal' }} />
