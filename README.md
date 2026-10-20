@@ -2,7 +2,30 @@
 
 > *Neighbours meet through small real-world quests.*
 
+**Team SimeWay | Sunway University**
+
 A gamified community app that transforms local interactions into rewarding experiences through daily quests, neighbourhood challenges, and a points-based reward system.
+
+---
+
+## 👥 Team Members
+
+- **Colin Leong Hong Seng**
+- **Daphne Ng Hui Qi**
+- **Ow Ji Joe**
+- **Tan Wen Zhe**
+
+---
+
+## 🎯 Hackathon Challenge
+
+**Sime Darby Property University Hackathon 2026 — Township of Tomorrow**
+
+### Challenge Focus: *Feeling Connected to Neighbours*
+
+> *"How might we enable every resident to live healthier, safer, more connected and more fulfilling lives?"*
+
+JiranKu directly addresses the **"Feeling connected to neighbours"** aspect of the People category by leveraging technology and gamification to foster genuine community connections in modern townships.
 
 ---
 
@@ -99,6 +122,23 @@ See which neighbours are currently available and ready to join quests, making it
 
 ### 📊 Leaderboard
 Track neighbourhood rankings and see how your community compares to others, adding friendly competition to community building.
+
+---
+## Why JiranKu for Township of Tomorrow
+
+### Alignment with Sime Darby Property's Vision
+
+JiranKu embodies the core philosophy of the **Township of Tomorrow** initiative by going beyond infrastructure to focus on the human element of community building.
+
+### Real-World Implementation Potential
+
+JiranKu is designed for immediate deployment in Sime Darby Property townships:
+
+1. **Pilot Ready** — Working prototype can be tested in a single neighbourhood
+2. **Low Barrier to Entry** — No special hardware required — residents use their smartphones
+3. **Business Model** — Self-sustaining through local business partnerships
+4. **Data-Driven** — Analytics dashboard for township managers to track community engagement
+5. **Expandable** — Can integrate with existing township apps and smart city infrastructure
 
 ---
 
