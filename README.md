@@ -54,18 +54,20 @@ JiranKu brings neighbours together through micro-quests that encourage real-worl
 ## 📸 App Screenshots
 
 ### Registration & Onboarding
-<img src="https://github.com/user-attachments/assets/08d552be-a960-44b8-ac98-1eb70638625b" alt="Registration" width="300"/>
-
+<img width="540" height="1230" alt="Registration" src="https://github.com/user-attachments/assets/254d536d-4aca-46c7-ba50-44597cd59642" />
 
 
 ### Join a Quest
-<img src="screenshots/join_quest.png" alt="Join Quest" width="300"/>
+<img width="540" height="1230" alt="Join Quest" src="https://github.com/user-attachments/assets/9a0c51df-07d6-4118-8a1d-6001e2bfb682" />
+
 
 ### Verify with Group Photo
-<img src="screenshots/verify.png" alt="Verify" width="300"/>
+<img width="540" height="1230" alt="Verify" src="https://github.com/user-attachments/assets/04cf5e53-7ca5-4e88-a42d-687d1932b639" />
+
 
 ### Redeem Rewards
-<img src="screenshots/rewards.png" alt="Rewards" width="300"/>
+<img width="540" height="1230" alt="Rewards" src="https://github.com/user-attachments/assets/a6346d37-40cc-42b7-8759-a986953140e0" />
+
 
 ---
 
