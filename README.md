@@ -58,11 +58,10 @@ JiranKu brings neighbours together through micro-quests that encourage real-worl
 
 
 ### Join a Quest
-<img width="270" height="615" alt="Join Quest" src="https://github.com/user-attachments/assets/9a0c51df-07d6-4118-8a1d-6001e2bfb682" />
-
+<img width="270" height="615" alt="Verify" src="https://github.com/user-attachments/assets/04cf5e53-7ca5-4e88-a42d-687d1932b639" />
 
 ### Verify with Group Photo
-<img width="270" height="615" alt="Verify" src="https://github.com/user-attachments/assets/04cf5e53-7ca5-4e88-a42d-687d1932b639" />
+<img width="270" height="615" alt="Join Quest" src="https://github.com/user-attachments/assets/9a0c51df-07d6-4118-8a1d-6001e2bfb682" />
 
 
 ### Redeem Rewards
