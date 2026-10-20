@@ -54,7 +54,9 @@ JiranKu brings neighbours together through micro-quests that encourage real-worl
 ## 📸 App Screenshots
 
 ### Registration & Onboarding
-<img src="screenshots/register.png" alt="Registration" width="300"/>
+<img src="https://github.com/user-attachments/assets/08d552be-a960-44b8-ac98-1eb70638625b" alt="Registration" width="300"/>
+
+
 
 ### Join a Quest
 <img src="screenshots/join_quest.png" alt="Join Quest" width="300"/>
